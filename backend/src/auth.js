@@ -43,10 +43,10 @@ export const auth = betterAuth({
           `UPDATE "verification" SET "value" = $1 WHERE "identifier" = $2 AND "value" = $3`,
           [otp, user.email, token]
         )
-        
+
         // 3. Send the OTP code via email (or log it during development)
         console.log(`[Email Verification OTP] User: ${user.email} | OTP: ${otp}`)
-        
+
         // In production, you would send this via Resend/Nodemailer:
         // await resend.emails.send({ ... })
       } catch (err) {
@@ -65,6 +65,7 @@ export const auth = betterAuth({
     github: {
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      prompt: 'select_account',
     },
   },
 
