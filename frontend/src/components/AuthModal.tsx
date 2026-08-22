@@ -123,7 +123,7 @@ export default function AuthModal({ defaultTab = 'login', onClose }: Props) {
     }
   }
 
-  async function handleSocial(provider) {
+  async function handleSocial(provider: 'google' | 'github') {
     if (socialLoading) return
     setSocialLoading(provider)
     setError('')

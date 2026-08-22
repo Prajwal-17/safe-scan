@@ -4,6 +4,7 @@ import cors from 'cors'
 import { toNodeHandler } from 'better-auth/node'
 import { auth } from './auth.js'
 import aiRoutes from "./routes/ai.routes.js";
+import productRoutes from "./routes/product.routes.js";
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -19,8 +20,10 @@ app.use(cors({
 // Must be mounted BEFORE express.json() — Better Auth reads raw request body
 app.all('/api/auth/*splat', toNodeHandler(auth))
 
+app.use("/api/products", productRoutes);
 // ── Body parser (for your own routes) 
 app.use(express.json())
+
 
 //AI routes
 app.use("/api/ai", aiRoutes)
