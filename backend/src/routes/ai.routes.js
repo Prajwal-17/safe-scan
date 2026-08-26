@@ -1,13 +1,13 @@
 import express from 'express';
 import { summarizeProduct } from '../services/ai.service.js';
-import { findProductByBarcode } from '../services/product.service.js';
+import { findProductWithFallback } from '../services/product.service.js';
 
 const router = express.Router();
 
 /**
  * POST /api/ai/summarize
  * Body: { barcode: string }
- * Looks up the product from the local dataset, then asks Gemini to summarise it.
+ * Looks up the product (local first, then Open Food Facts), then asks Gemini to summarise.
  */
 router.post("/summarize", async (req, res) => {
     try {
@@ -20,12 +20,12 @@ router.post("/summarize", async (req, res) => {
             });
         }
 
-        const product = findProductByBarcode(barcode);
+        const { product, source } = await findProductWithFallback(barcode);
 
         if (!product) {
             return res.status(404).json({
                 success: false,
-                error: "Product not found for that barcode",
+                error: "Product not found — try entering the barcode manually or check the number.",
             });
         }
 
@@ -33,6 +33,7 @@ router.post("/summarize", async (req, res) => {
 
         return res.status(200).json({
             success: true,
+            source,
             summary,
             product,
         });
